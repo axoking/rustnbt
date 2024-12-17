@@ -53,9 +53,8 @@ impl Decoder {
 		NBTError::Decoding(msg, self.pos)
 	}
 
-	pub fn decode(&mut self) -> Result<Tag, NBTError> {
-		match self.read_integer::<i8>()? {
-			0 => Ok(Tag::Empty),
+	fn decode_by_id(&mut self, id: i8) -> Result<Tag, NBTError> {
+		match id {
 			1 => self.decode_byte(),
 			2 => self.decode_short(),
 			3 => self.decode_int(),
@@ -64,10 +63,11 @@ impl Decoder {
 			6 => self.decode_double(),
 			7 => self.decode_byte_array(),
 			8 => self.decode_string(),
-
+			9 => self.decode_list(),
+			10 => self.decode_compound(),
 			11 => self.decode_int_array(),
 			12 => self.decode_long_array(),
-			code => Err(self.error(format!("Unknown tag type: {code:#02X}")))
+			code => Err(self.error(format!("Invalid tag type: {code:#02X}")))
 		}
 	}
 
@@ -114,5 +114,19 @@ impl Decoder {
 		chunk.read_to_string(&mut str)?;
 		self.pos += length as usize;
 		Ok(Tag::String(str))
+	}
+
+	fn decode_list(&mut self) -> Result<Tag, NBTError> {
+		let tag_type: i8 = self.read_integer()?;
+		let length: i32 = self.read_integer()?;
+		let mut list = Vec::new();
+		for _ in 0..length {
+			list.push(self.decode_by_id(tag_type)?);
+		}
+		Ok(Tag::List(list))
+	}
+
+	fn decode_compound(&mut self) -> Result<Tag, NBTError> {
+		todo!()
 	}
 }
