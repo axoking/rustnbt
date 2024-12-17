@@ -15,7 +15,7 @@ impl Display for NBTError {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 		match self {
 			Self::Io(err) => f.write_fmt(format_args!("Input/Output error: {}", err.to_string())),
-			Self::Decoding(msg, pos) => f.write_fmt(format_args!("Decoding failed at byte {pos}: {msg}"))
+			Self::Decoding(msg, pos) => f.write_fmt(format_args!("Decoding failed (just before byte {pos}): {msg}"))
 		}
 	}
 }
