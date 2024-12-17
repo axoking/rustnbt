@@ -127,6 +127,23 @@ impl Decoder {
 	}
 
 	fn decode_compound(&mut self) -> Result<Tag, NBTError> {
-		todo!()
+		let mut data = Vec::new();
+		loop {
+			let tag_type: i8 = self.read_integer()?;
+			if tag_type == 0 {
+				return Ok(Tag::Compound(data));
+			}
+			let length = self.read_integer::<i16>()? as u16;
+			let mut name = String::new();
+			let mut chunk = (&mut self.reader).take(length.into());
+			chunk.read_to_string(&mut name)?;
+			self.pos += length as usize;
+			let content = self.decode_by_id(tag_type)?;
+			data.push((name, content));
+		}
+	}
+
+	pub fn decode(&mut self) -> Result<Tag, NBTError> {
+		self.decode_compound()
 	}
 }
