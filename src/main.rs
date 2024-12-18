@@ -1,3 +1,7 @@
+use nbt::decode::Decoder;
+
 fn main() {
-    println!("Hello, world!");
+	let mut decoder = Decoder::open_file("level.dat").unwrap();
+	let nbt = decoder.decode().unwrap();
+	println!("{nbt:?}");
 }

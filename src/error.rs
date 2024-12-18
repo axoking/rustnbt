@@ -1,5 +1,6 @@
 use std::{fmt::Display, io};
 
+#[derive(Debug)]
 pub enum NBTError {
 	Io(io::Error),
 	Decoding(String, usize)
