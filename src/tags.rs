@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 #[derive(Debug)]
 pub enum Tag {
-	Compound(Vec<(String, Tag)>),
+	Compound(HashMap<String, Tag>),
 	List(Vec<Tag>),
 	Boolean(bool),
 	Byte(i8),

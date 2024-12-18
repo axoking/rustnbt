@@ -1,4 +1,4 @@
-use std::{io::{self, BufReader, Read}, fs::File, path::Path};
+use std::{collections::HashMap, fs::File, io::{self, BufReader, Read}, path::Path};
 use crate::{integer::Integer, error::NBTError, tags::Tag};
 
 pub struct Decoder {
@@ -109,12 +109,12 @@ impl Decoder {
 	}
 
 	fn decode_compound(&mut self) -> Result<Tag, NBTError> {
-		let mut data = Vec::new();
+		let mut data = HashMap::new();
 		loop {
 			match self.decode_compound_element()? {
-				Some(element) => data.push(element),
+				Some((name, content)) => data.insert(name, content),
 				None => return Ok(Tag::Compound(data))
-			}
+			};
 		}
 	}
 
